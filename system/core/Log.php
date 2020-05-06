@@ -103,6 +103,7 @@ class CI_Log {
 	 * @var array
 	 */
 	protected $_levels = array('ERROR' => 1, 'DEBUG' => 2, 'INFO' => 3, 'ALL' => 4);
+        protected $_sysloglevels = array('ERROR' => LOG_ERR, 'DEBUG' => LOG_DEBUG, 'INFO' => LOG_INFO, 'ALL' => LOG_DEBUG);
 
 	/**
 	 * mbstring.func_overload flag
@@ -121,6 +122,7 @@ class CI_Log {
 	public function __construct()
 	{
 		$config =& get_config();
+                openlog("jobe", LOG_PID | LOG_PERROR, LOG_DAEMON);
 
 		isset(self::$func_overload) OR self::$func_overload = (extension_loaded('mbstring') && ini_get('mbstring.func_overload'));
 
@@ -181,6 +183,7 @@ class CI_Log {
 		{
 			return FALSE;
 		}
+                syslog($this->_sysloglevels[$level], $msg);
 
 		$filepath = $this->_log_path.'log-'.date('Y-m-d').'.'.$this->_file_ext;
 		$message = '';

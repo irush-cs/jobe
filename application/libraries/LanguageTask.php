@@ -228,6 +228,15 @@ abstract class Task {
                     break;
                 }
             }
+            if ($user != $numUsers) {
+                $activeusers = 0;
+                for ($auser = 0; $auser < $numUsers; $auser++) {
+                    if ($active[$auser]) {
+                        $activeusers++;
+                    }
+                }
+                log_message('debug', 'Running as user '.$user.', total: '.$activeusers.'/'.$numUsers);
+            }
             shm_detach($shm);
             sem_release($sem);
             if ($user == $numUsers) {
@@ -246,6 +255,8 @@ abstract class Task {
 
     // Mark the given user number (0 to jobe_max_users - 1) as free.
     private function freeUser($userNum) {
+        global $CI;
+        $numUsers = $CI->config->item('jobe_max_users');
         $key = ftok(__FILE__, 'j');
         $sem = sem_get($key);
         sem_acquire($sem);
@@ -253,6 +264,13 @@ abstract class Task {
         $active = shm_get_var($shm, ACTIVE_USERS);
         $active[$userNum] = FALSE;
         shm_put_var($shm, ACTIVE_USERS, $active);
+        $activeusers = 0;
+        for ($user = 0; $user < $numUsers; $user++) {
+            if ($active[$user]) {
+                $activeusers++;
+            }
+        }
+        log_message('debug', 'Done as user '.$userNum.', total: '.$activeusers.'/'.$numUsers);
         shm_detach($shm);
         sem_release($sem);
     }
