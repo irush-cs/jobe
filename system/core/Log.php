@@ -103,7 +103,7 @@ class CI_Log {
 	 * @var array
 	 */
 	protected $_levels = array('ERROR' => 1, 'DEBUG' => 2, 'INFO' => 3, 'ALL' => 4);
-        protected $_sysloglevels = array('ERROR' => LOG_ERR, 'DEBUG' => LOG_DEBUG, 'INFO' => LOG_INFO, 'ALL' => LOG_DEBUG);
+        protected $_sysloglevels = array('ERROR' => LOG_ERR, 'DEBUG' => LOG_NOTICE, 'INFO' => LOG_INFO, 'ALL' => LOG_DEBUG);
 
 	/**
 	 * mbstring.func_overload flag
